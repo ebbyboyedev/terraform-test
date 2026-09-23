@@ -69,11 +69,6 @@ resource "aws_route_table" "test_public_rt" {
   }
 }
 
-resource "aws_route_table_association" "test_public_association" {
-  subnet_id      = aws_subnet.test_public_subnet.id
-  route_table_id = aws_route_table.test_public_rt.id
-}
-
 
 resource "aws_route_table" "test_private_rt" {
   vpc_id = aws_vpc.test_vpc.id
@@ -134,7 +129,7 @@ resource "aws_default_security_group" "public_server" {
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
-    protocol  = 
+    protocol  = tcp
     self      = true
     from_port = 80
     to_port   = 80
@@ -152,7 +147,7 @@ resource "aws_default_security_group" "private_server" {
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
-    protocol  = 
+    protocol  = tcp
     self      = true
     from_port = 443
     to_port   = 443
@@ -170,7 +165,7 @@ resource "aws_default_security_group" "database_server" {
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
-    protocol  = 
+    protocol  = tcp
     self      = true
     from_port = 3306
     to_port   = 3306
