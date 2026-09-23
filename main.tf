@@ -21,17 +21,17 @@ resource "aws_vpc" "test_vpc" {
 
 resource "aws_subnet" "test_public_subnet" {
   vpc_id     = aws_vpc.test_vpc.id
-  cidr_block = ""
+  cidr_block = "${cidrsubnet(aws_vpc.test_vpc.cidr_block, 8, 1)}"
 
   tags = {
-    Name = "test ps"
+    Name = "test public subnet"
   }
 }
 
 
 resource "aws_subnet" "test_private_subnet" {
   vpc_id     = aws_vpc.test_vpc.id
-  cidr_block = ""
+  cidr_block = "${cidrsubnet(aws_vpc.test_vpc.cidr_block, 8, 2)}"
 
   tags = {
     Name = "test private subnet"
@@ -41,10 +41,10 @@ resource "aws_subnet" "test_private_subnet" {
 
 resource "aws_subnet" "test_database_subnet" {
   vpc_id     = aws_vpc.test_vpc.id
-  cidr_block = ""
+  cidr_block = "${cidrsubnet(aws_vpc.test_vpc.cidr_block, 8, 3)}"
 
   tags = {
-    Name = "test dbs"
+    Name = "test database subnet"
   }
 }
 
@@ -60,7 +60,7 @@ resource "aws_route_table" "test_public_rt" {
   vpc_id = aws_vpc.test_vpc.id
 
   route {
-    cidr_block = "10.0.1.0/24"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.test_igw.id
   }
 
@@ -73,11 +73,7 @@ resource "aws_route_table" "test_public_rt" {
 resource "aws_route_table" "test_private_rt" {
   vpc_id = aws_vpc.test_vpc.id
 
-  route {
-    cidr_block = "10.1.0.0/16"
-    gateway_id = "local"
-  }
-
+ 
 
   tags = {
     Name = "test private rt"
@@ -88,10 +84,6 @@ resource "aws_route_table" "test_private_rt" {
 resource "aws_route_table" "test_database_rt" {
   vpc_id = aws_vpc.test_vpc.id
 
-  route {
-    cidr_block = "10.1.0.0/16"
-    gateway_id = "local"
-  }
 
 
   tags = {
@@ -113,6 +105,8 @@ resource "aws_route_table_association" "test_database_association" {
   subnet_id      = aws_subnet.test_database_subnet.id
   route_table_id = aws_route_table.test_database_rt.id
 }
+
+
 
 
 resource "aws_nat_gateway" "test_nat_gateway" {
