@@ -123,7 +123,7 @@ resource "aws_default_security_group" "public_server" {
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
-    protocol  = tcp
+    protocol  = "tcp"
     self      = true
     from_port = 80
     to_port   = 80
@@ -141,7 +141,7 @@ resource "aws_default_security_group" "private_server" {
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
-    protocol  = tcp
+    protocol  = "tcp"
     self      = true
     from_port = 443
     to_port   = 443
@@ -159,11 +159,12 @@ resource "aws_default_security_group" "database_server" {
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
-    protocol  = tcp
+    protocol  = "tcp"
     self      = true
     from_port = 3306
     to_port   = 3306
   }
+
 
   egress {
     from_port   = 0
