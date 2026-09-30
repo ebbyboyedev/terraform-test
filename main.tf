@@ -30,6 +30,7 @@ resource "aws_subnet" "test_public_subnet" {
 
 
 resource "aws_subnet" "test_private_subnet" {
+  availability_zone = "us-east-1a"
   vpc_id     = aws_vpc.test_vpc.id
   cidr_block = "${cidrsubnet(aws_vpc.test_vpc.cidr_block, 8, 2)}"
 
@@ -40,6 +41,7 @@ resource "aws_subnet" "test_private_subnet" {
 
 
 resource "aws_subnet" "test_database_subnet" {
+  availability_zone = "us-east-1b"
   vpc_id     = aws_vpc.test_vpc.id
   cidr_block = "${cidrsubnet(aws_vpc.test_vpc.cidr_block, 8, 3)}"
 
@@ -115,7 +117,7 @@ resource "aws_eip" "test_eip" {
 
 resource "aws_nat_gateway" "test_nat_gateway" {
   subnet_id     = aws_subnet.test_public_subnet.id
-  allocation_id    = "[aws_eip.test_eip[0].id]"
+  allocation_id    = aws_eip.test_eip[0].id
 
   tags = {
     Name = "gw NAT"
