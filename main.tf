@@ -126,7 +126,8 @@ resource "aws_nat_gateway" "test_nat_gateway" {
 }
 
 
-resource "aws_default_security_group" "public_server" {
+resource "aws_security_group" "public_server" {
+  name        = "public_server"
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
@@ -144,7 +145,8 @@ resource "aws_default_security_group" "public_server" {
   }
 }
 
-resource "aws_default_security_group" "private_server" {
+resource "aws_security_group" "private_server" {
+  name        = "private_server"
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
@@ -162,7 +164,8 @@ resource "aws_default_security_group" "private_server" {
   }
 }
 
-resource "aws_default_security_group" "database_server" {
+resource "aws_security_group" "database_server" {
+  name        = "database_server"
   vpc_id = aws_vpc.test_vpc.id
 
   ingress {
@@ -202,7 +205,7 @@ resource "aws_instance" "test_frontend_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   subnet_id = aws_subnet.test_public_subnet.id
-  vpc_security_group_ids = [aws_default_security_group.public_server.id]
+  vpc_security_group_ids = [aws_security_group.public_server.id]
 
   tags = {
     Name = "frontend server"
@@ -213,7 +216,7 @@ resource "aws_instance" "test_backend_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   subnet_id = aws_subnet.test_private_subnet.id
-  vpc_security_group_ids = [aws_default_security_group.private_server.id]
+  vpc_security_group_ids = [aws_security_group.private_server.id]
 
   tags = {
     Name = "backend server"
