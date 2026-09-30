@@ -131,7 +131,7 @@ resource "aws_default_security_group" "public_server" {
 
   ingress {
     protocol  = "tcp"
-    self      = true
+    self = true
     from_port = 80
     to_port   = 80
   }
@@ -149,7 +149,7 @@ resource "aws_default_security_group" "private_server" {
 
   ingress {
     protocol  = "tcp"
-    self      = true
+    self = true
     from_port = 443
     to_port   = 443
   }
@@ -167,7 +167,7 @@ resource "aws_default_security_group" "database_server" {
 
   ingress {
     protocol  = "tcp"
-    self      = true
+    self = true
     from_port = 3306
     to_port   = 3306
   }
@@ -201,6 +201,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "test_frontend_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
+  subnet_id = aws_subnet.test_public_subnet.id
   vpc_security_group_ids = [aws_default_security_group.public_server.id]
 
   tags = {
@@ -211,6 +212,7 @@ resource "aws_instance" "test_frontend_server" {
 resource "aws_instance" "test_backend_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
+  subnet_id = aws_subnet.test_private_subnet.id
   vpc_security_group_ids = [aws_default_security_group.private_server.id]
 
   tags = {
