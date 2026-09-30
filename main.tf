@@ -106,11 +106,16 @@ resource "aws_route_table_association" "test_database_association" {
   route_table_id = aws_route_table.test_database_rt.id
 }
 
+resource "aws_eip" "test_eip" {
+  count  = 2
+  domain = "vpc"
+}
 
 
 
 resource "aws_nat_gateway" "test_nat_gateway" {
   subnet_id     = aws_subnet.test_public_subnet.id
+  allocation_id    = [aws_eip.test_eip[0].id]
 
   tags = {
     Name = "gw NAT"
@@ -194,6 +199,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "test_frontend_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
+  vpc_security_group_ids = [aws_default_security_group.public_server.id]
 
   tags = {
     Name = "frontend server"
@@ -203,6 +209,7 @@ resource "aws_instance" "test_frontend_server" {
 resource "aws_instance" "test_backend_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
+  vpc_security_group_ids = [aws_default_security_group.private_server.id]
 
   tags = {
     Name = "backend server"
